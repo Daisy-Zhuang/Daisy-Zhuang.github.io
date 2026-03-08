@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>庄鑫妍 Daisy Zhuang - AntBio 数字名片</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #1b5383;
+            --primary-red: #cc3a3a;
+            --primary-blue-light: #2c7ebf;
+            --text-dark: #1a202c;
+            --text-gray: #64748b;
+            --bg-color: #f0f4f8;
+            --card-bg: rgba(255, 255, 255, 0.88);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 15px;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 背景光球保留，用于烘托大环境气氛 */
+        .blob {
+            position: absolute;
+            filter: blur(60px);
+            z-index: -1;
+            opacity: 0.5;
+            animation: float 10s ease-in-out infinite;
+        }
+        .blob-1 { width: 300px; height: 300px; background: rgba(27, 83, 131, 0.4); top: -50px; left: -50px; border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+        .blob-2 { width: 250px; height: 250px; background: rgba(204, 58, 58, 0.3); bottom: -50px; right: -50px; border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; animation-delay: -3s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+
+        /* ================= 核心卡片容器 ================= */
+        .card {
+            background-color: var(--card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            width: 100%;
+            max-width: 480px;
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12), 
+                        inset 0 0 0 1px rgba(255, 255, 255, 0.9);
+            overflow: hidden; /* 确保粒子不会跑到卡片外面 */
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        /* === 粒子画布被限制在卡片内部 === */
+        #particles-canvas {
+            position: absolute; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; /* 放在卡片背景之上，内容之下 */
+            pointer-events: none;
+            opacity: 0.7; /* 让粒子稍微柔和一些 */
+        }
+
+        /* 确保卡片内的所有文字和按钮都在粒子之上 */
+        .card-content {
+            position: relative;
+            z-index: 1; 
+        }
+
+        /* ---------------- 动画定义 ---------------- */
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .anim-up { opacity: 0; animation: slideInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .anim-left { opacity: 0; animation: slideInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .anim-right { opacity: 0; animation: slideInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .anim-down { opacity: 0; animation: slideInDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+        .delay-6 { animation-delay: 0.6s; }
+
+        /* ---------------- 模块样式细节 ---------------- */
+        .header {
+            padding: 40px 30px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .name-section h1 {
+            font-size: 28px;
+            margin-bottom: 4px;
+            background: linear-gradient(135deg, var(--primary-blue), #2c7ebf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            flex-wrap: wrap;
+            letter-spacing: 1px;
+            font-weight: 800;
+        }
+        
+        .name-section .en-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-gray);
+            -webkit-text-fill-color: var(--text-gray);
+        }
+
+        .name-section .title {
+            font-size: 15px;
+            color: var(--text-gray);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        /* ================= Logo 专属定制设计 ================= */
+        .logo-wrapper {
+            position: relative;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 12px;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 底部红蓝能量呼吸光晕 */
+        .logo-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 15%; left: 10%; right: 10%; bottom: 15%;
+            background: radial-gradient(circle, rgba(204,58,58,0.2) 0%, rgba(27,83,131,0.2) 100%);
+            filter: blur(12px);
+            z-index: -1;
+            opacity: 0.5;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            border-radius: 50%;
+        }
+
+        /* 镜面流光扫过效果 */
+        .logo-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .header-logo {
+            max-width: 140px;
+            height: auto;
+            display: block;
+            /* 关键技巧：让白底JPG图片完美融入毛玻璃背景 */
+            mix-blend-mode: darken; 
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));
+            transition: filter 0.4s ease;
+        }
+
+        /* 官网样式副标题 */
+        .logo-subtext {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-size: 10.5px;
+            color: #1a1a1a;
+            margin-top: 6px;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+        }
+
+        /* 悬浮交互 */
+        .logo-wrapper:hover {
+            transform: translateY(-4px) scale(1.02);
+        }
+        .logo-wrapper:hover .header-logo {
+            filter: drop-shadow(0 8px 15px rgba(204,58,58,0.15));
+        }
+        .logo-wrapper:hover::after {
+            opacity: 1;
+            transform: scale(1.1);
+            animation: pulseGlow 1.5s infinite alternate;
+        }
+        .logo-wrapper:hover::before {
+            animation: logoShine 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        @keyframes pulseGlow {
+            from { opacity: 0.6; filter: blur(12px); }
+            to { opacity: 1; filter: blur(18px); }
+        }
+        @keyframes logoShine {
+            0% { left: -100%; }
+            100% { left: 200%; }
+        }
+        /* =================================================== */
+
+        .quick-contact {
+            margin: 0 25px;
+            padding: 22px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(241, 245, 249, 0.95));
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: 0 10px 25px rgba(27, 83, 131, 0.05);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .quick-contact:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(27, 83, 131, 0.1);
+        }
+
+        .quick-contact p { font-size: 22px; font-weight: 700; margin-bottom: 8px; color: var(--text-dark); }
+        .quick-contact .quote {
+            color: var(--primary-red); font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(204, 58, 58, 0.08); border-radius: 20px;
+        }
+        .quick-contact .quote a { color: var(--primary-red); text-decoration: none; transition: color 0.2s; }
+        .quick-contact .quote a:hover { color: #a02828; }
+
+        .company-info { padding: 30px; }
+        .company-name { font-size: 18px; font-weight: 800; color: var(--primary-blue); margin-bottom: 25px; display: flex; align-items: center; gap: 8px; }
+        .company-name::before { content: ''; display: block; width: 4px; height: 18px; background: var(--primary-red); border-radius: 4px; }
+        
+        .info-list { list-style: none; }
+        .info-item {
+            display: flex; align-items: flex-start; margin-bottom: 20px; text-decoration: none; color: var(--text-dark); font-size: 14px; padding: 12px; margin-left: -12px; border-radius: 12px; transition: all 0.3s ease; position: relative; z-index: 1;
+        }
+        .info-item[href]::after {
+            content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: #f1f5f9; border-radius: 12px; z-index: -1; transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease;
+        }
+        .info-item[href]:hover::after { transform: scaleX(1); }
+        .info-item[href]:hover { color: var(--primary-blue); transform: translateX(8px); }
+
+        .info-icon {
+            color: #fff; background: var(--primary-blue); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; margin-right: 15px; flex-shrink: 0; transition: transform 0.3s ease, background 0.3s ease;
+        }
+        .info-item[href]:hover .info-icon { transform: scale(1.1) rotate(5deg); background: var(--primary-blue-light); }
+
+        .info-text { word-break: break-word; line-height: 1.5; padding-top: 4px; }
+        .address-en { font-size: 11px; color: var(--text-gray); margin-top: 6px; display: block; line-height: 1.4; opacity: 0.8; }
+
+        .qr-section { text-align: center; padding: 10px 30px 35px; display: flex; flex-direction: column; align-items: center; }
+        .qr-wrapper {
+            background: #fff; padding: 10px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #f0f0f0; transition: all 0.4s ease; position: relative;
+        }
+        .qr-wrapper:hover { transform: translateY(-5px) scale(1.05); }
+        .qr-wrapper img { width: 130px; height: 130px; display: block; border-radius: 8px; }
+        .qr-section p { font-size: 14px; color: var(--text-dark); margin-top: 15px; font-weight: 600; }
+
+        .brands-section {
+            padding: 35px 30px;
+            background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(248, 250, 252, 0.7) 100%);
+            border-top: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .slogan {
+            text-align: center; font-size: 20px; font-weight: 800; margin-bottom: 30px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--primary-red), var(--primary-blue)); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: textShine 6s linear infinite;
+        }
+        @keyframes textShine { to { background-position: 200% center; } }
+        .slogan span {
+            display: inline-block; font-size: 12px; font-weight: 600; color: #fff; -webkit-text-fill-color: #fff; margin-top: 10px; text-transform: uppercase; letter-spacing: 2px; background: var(--text-dark); padding: 4px 12px; border-radius: 20px;
+        }
+
+        .brand-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .brand-link {
+            display: block; border-radius: 12px; background: rgba(255, 255, 255, 0.9); box-shadow: 0 4px 15px rgba(0,0,0,0.04); transition: all 0.3s ease; text-align: center; border: 1px solid rgba(234, 237, 241, 0.8); overflow: hidden; position: relative; backdrop-filter: blur(5px);
+        }
+        .brand-link:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(27, 83, 131, 0.12); border-color: rgba(27, 83, 131, 0.2); }
+        .brand-link img { width: 100%; height: 85px; object-fit: contain; padding: 12px; display: block; transition: transform 0.4s ease; }
+        .brand-link:hover img { transform: scale(1.08); }
+
+        .footer {
+            background: linear-gradient(135deg, var(--primary-blue), #123e63); color: #ffffff; text-align: center; padding: 25px; font-size: 13px; font-weight: 500; letter-spacing: 1px;
+        }
+        
+        @media (max-width: 380px) { .brand-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <!-- 外部背景光球 -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="card" id="card3d">
+        
+        <!-- 粒子动画画布移动到卡片内部 -->
+        <canvas id="particles-canvas"></canvas>
+
+        <!-- 所有内容包裹在 card-content 中，确保层级高于画布 -->
+        <div class="card-content">
+            
+            <!-- 头部 -->
+            <div class="header anim-down delay-1">
+                <div class="name-section">
+                    <h1>庄鑫妍 <span class="en-name">| Daisy Zhuang</span></h1>
+                    <div class="title">销售工程师</div>
+                </div>
+                <!-- 官网样式 Logo 组合 -->
+                <div class="logo-wrapper">
+                    <!-- 使用了转换后的 GitHub Raw 链接 -->
+                    <img src="https://raw.githubusercontent.com/HelsonLiang/helsonliang.github.io/fb0f174e5779b94fe1dd4d30e393683bd3b98522/373201772954196_.pic.jpg" alt="AntBio Logo" class="header-logo">
+                    <div class="logo-subtext">Antibodies | Proteins | Kits</div>
+                </div>
+            </div>
+
+            <!-- 快速联系 -->
+            <div class="quick-contact anim-right delay-2">
+                <p>
+                    <i class="fa-solid fa-phone" style="font-size: 16px; color: var(--primary-blue); margin-right: 10px;"></i>
+                    <a href="tel:+85297194931" style="color: inherit; text-decoration: none;">+852 97194931</a>
+                </p>
+                <div class="quote">
+                    For Quotation: <a href="mailto:pengyh@univ-bio.com">pengyh@univ-bio.com</a>
+                </div>
+            </div>
+
+            <!-- 详细信息 -->
+            <div class="company-info anim-left delay-3">
+                <div class="company-name">ANT BIO PTE. LTD.</div>
+                
+                <div class="info-list">
+                    <a href="mailto:xy-zhuang@univ-bio.com" class="info-item">
+                        <i class="fa-regular fa-envelope info-icon"></i>
+                        <span class="info-text">xy-zhuang@univ-bio.com</span>
+                    </a>
+                    
+                    <a href="https://www.antbioinc.com" target="_blank" class="info-item">
+                        <i class="fa-solid fa-globe info-icon"></i>
+                        <span class="info-text">www.antbioinc.com</span>
+                    </a>
+                    
+                    <div class="info-item">
+                        <i class="fa-solid fa-location-dot info-icon"></i>
+                        <span class="info-text">
+                            香港新界沙田火炭坳背灣街 33-35 號世紀工業中心 8 樓 N室
+                            <span class="address-en">FLAT N ON 8/F CENTURY INDUSTRIAL CENTRE NO.33-35 AU PUI WAN STREET SHATIN N.T.</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 微信二维码 -->
+            <div class="qr-section anim-up delay-4">
+                <div class="qr-wrapper">
+                    <img src="https://placehold.co/150x150/ffffff/000000?text=WeChat+QR" alt="微信二维码">
+                </div>
+                <p>扫一扫，加我微信</p>
+            </div>
+
+            <!-- 品牌超链接区域 -->
+            <div class="brands-section anim-up delay-5">
+                <div class="slogan">
+                    Fueling Research, Feeding Discovery
+                    <span>Antibodies | Proteins | Kits</span>
+                </div>
+
+                <div class="brand-grid">
+                    <a href="https://www.antbioinc.com" target="_blank" class="brand-link">
+                        <img src="https://placehold.co/400x150/ffffff/1b5383?text=AntBio" alt="公司首页">
+                    </a>
+                    <a href="https://en.starter-bio.com" target="_blank" class="brand-link">
+                        <img src="https://placehold.co/400x150/ffffff/1b5383?text=STARTER" alt="斯达特">
+                    </a>
+                    <a href="https://www.ua-bio.com" target="_blank" class="brand-link">
+                        <img src="https://placehold.co/400x150/ffffff/1b5383?text=UA-BIO" alt="UA-Bio">
+                    </a>
+                    <a href="https://www.absin.net" target="_blank" class="brand-link">
+                        <img src="https://placehold.co/400x150/ffffff/cc3a3a?text=absin" alt="absin">
+                    </a>
+                </div>
+            </div>
+
+            <!-- 底部 -->
+            <div class="footer anim-up delay-6">
+                <p>*可代购其他品牌产品</p>
+            </div>
+
+        </div> <!-- end of card-content -->
+    </div> <!-- end of card -->
+
+    <!-- 粒子动画脚本 -->
+    <script>
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        const cardContainer = document.querySelector('.card');
+        let particlesArray = [];
+        const numberOfParticles = 80;
+
+        // 监听卡片尺寸变化来重置画布大小
+        function setCanvasSize() {
+            if (cardContainer && canvas) {
+                canvas.width = cardContainer.offsetWidth;
+                canvas.height = cardContainer.offsetHeight;
+            }
+        }
+        
+        // 使用 ResizeObserver 并加上 requestAnimationFrame 修复报错
+        let resizeFrameId;
+        const resizeObserver = new ResizeObserver(() => {
+            window.cancelAnimationFrame(resizeFrameId);
+            resizeFrameId = window.requestAnimationFrame(() => {
+                setCanvasSize();
+            });
+        });
+        resizeObserver.observe(cardContainer);
+        setCanvasSize();
+
+        let scrollMomentum = 0;
+        let targetMomentum = 0;
+
+        window.addEventListener('wheel', (e) => {
+            targetMomentum += e.deltaY * 0.03;
+        });
+
+        let lastTouchY = 0;
+        window.addEventListener('touchstart', (e) => {
+            lastTouchY = e.touches[0].clientY;
+        });
+        window.addEventListener('touchmove', (e) => {
+            let currentY = e.touches[0].clientY;
+            let deltaY = lastTouchY - currentY; 
+            targetMomentum += deltaY * 0.05;
+            lastTouchY = currentY;
+        });
+
+        class Particle3D {
+            constructor() {
+                this.reset();
+                this.z = Math.random() * 1000;
+            }
+
+            reset() {
+                this.x = (Math.random() - 0.5) * canvas.width * 2;
+                this.y = (Math.random() - 0.5) * canvas.height * 2;
+                this.z = 1000; 
+                this.color = Math.random() > 0.5 ? '#1b5383' : '#cc3a3a';
+                this.baseSize = Math.random() * 2 + 0.5;
+            }
+
+            update() {
+                let speed = 1.2 + scrollMomentum;
+                this.z -= speed;
+
+                if (this.z <= 0) {
+                    this.reset();
+                    this.z = 1000; 
+                } 
+                else if (this.z > 1000) {
+                    this.reset();
+                    this.z = 0.1; 
+                }
+            }
+
+            draw() {
+                const focalLength = 250; 
+                const scale = focalLength / (focalLength + this.z);
+
+                const x2d = (this.x * scale) + (canvas.width / 2);
+                const y2d = (this.y * scale) + (canvas.height / 2);
+                const size2d = this.baseSize * scale * 2; 
+                
+                const alpha = Math.min(1, (1000 - this.z) / 800); 
+
+                if (alpha > 0 && x2d >= 0 && x2d <= canvas.width && y2d >= 0 && y2d <= canvas.height) {
+                    ctx.globalAlpha = alpha * 0.6; 
+                    ctx.beginPath();
+                    ctx.arc(x2d, y2d, size2d, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                }
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle3D());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            targetMomentum *= 0.90; 
+            scrollMomentum += (targetMomentum - scrollMomentum) * 0.1; 
+
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+    </script>
+</body>
+</html>
