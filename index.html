@@ -138,7 +138,7 @@
             font-weight: 600;
         }
 
-        /* Logo 样式与高光 */
+        /* Logo 专属高光 */
         .logo-wrapper {
             position: relative;
             cursor: pointer;
@@ -240,13 +240,29 @@
         .info-text { word-break: break-word; line-height: 1.5; padding-top: 4px; }
         .address-en { font-size: 10.5px; color: var(--text-gray); margin-top: 4px; display: block; line-height: 1.3; opacity: 0.8; }
 
+        /* --- 二维码部分 --- */
         .qr-section { text-align: center; padding: 10px 20px 25px; }
         .qr-container { display: flex; justify-content: center; gap: 20px; }
         .qr-item { display: flex; flex-direction: column; align-items: center; }
-        .qr-wrapper {
-            background: #fff; padding: 8px; border-radius: 14px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; transition: all 0.3s ease;
+        
+        /* 微信二维码容器（静态） */
+        .qr-static-wrapper {
+            background: #fff; padding: 8px; border-radius: 14px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); border: 1px solid #f0f0f0;
         }
-        .qr-wrapper img { width: 100px; height: 100px; display: block; border-radius: 8px; }
+        /* WhatsApp 跳转链接容器 */
+        .qr-link { text-decoration: none; color: inherit; display: block; }
+        .qr-link-wrapper {
+            background: #fff; padding: 8px; border-radius: 14px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; transition: all 0.3s ease;
+            position: relative;
+        }
+        .qr-link-wrapper::after {
+            content: '点击聊天';
+            position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
+            background: var(--primary-blue); color: white; font-size: 8px; padding: 2px 6px; border-radius: 10px; opacity: 0; transition: opacity 0.3s;
+        }
+        .qr-link:hover .qr-link-wrapper::after { opacity: 1; }
+
+        .qr-item img { width: 100px; height: 100px; display: block; border-radius: 8px; }
         .qr-item p { font-size: 13px; color: var(--text-dark); margin-top: 10px; font-weight: 600; }
 
         .brands-section {
@@ -256,82 +272,25 @@
         }
 
         .slogan {
-            text-align: center; 
-            font-size: 19px; 
-            font-weight: 800; 
-            margin-bottom: 25px; 
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-red) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));
+            text-align: center; font-size: 19px; font-weight: 800; margin-bottom: 25px; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-red) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));
         }
         .slogan span {
             display: inline-block; font-size: 10px; font-weight: 700; color: #fff; -webkit-text-fill-color: #fff; margin-top: 10px; text-transform: uppercase; letter-spacing: 1.5px; background: linear-gradient(90deg, #333, #555); padding: 4px 12px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
-        /* --- 重点升级：品牌卡片动画 (恢复并增强) --- */
         .brand-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        
         .brand-link {
-            display: block; 
-            border-radius: 12px; 
-            background: rgba(255, 255, 255, 0.95); 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03); 
-            text-align: center; 
-            border: 1px solid rgba(234, 237, 241, 0.8); 
-            overflow: hidden; 
-            position: relative; 
-            backdrop-filter: blur(5px);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 1;
+            display: block; border-radius: 12px; background: rgba(255, 255, 255, 0.95); box-shadow: 0 4px 15px rgba(0,0,0,0.03); text-align: center; border: 1px solid rgba(234, 237, 241, 0.8); overflow: hidden; position: relative; backdrop-filter: blur(5px); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 1;
         }
+        .brand-link::before { content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); z-index: 2; pointer-events: none; }
+        .brand-link:hover, .brand-link:active { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(27, 83, 131, 0.15); border-color: rgba(27, 83, 131, 0.2); background: #ffffff; }
+        .brand-link:hover::before, .brand-link:active::before { animation: logoShine 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        .brand-link img { width: 100%; height: 75px; object-fit: contain; padding: 10px; display: block; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .brand-link:hover img, .brand-link:active img { transform: scale(1.1); }
 
-        /* 品牌卡片高光扫过效果 (复用 Logo 逻辑) */
-        .brand-link::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -150%; width: 50%; height: 100%;
-            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%);
-            transform: skewX(-25deg);
-            z-index: 2;
-            pointer-events: none;
-            transition: 0s;
-        }
-
-        /* 悬浮与触碰动效 */
-        .brand-link:hover, .brand-link:active { 
-            transform: translateY(-5px); 
-            box-shadow: 0 12px 24px rgba(27, 83, 131, 0.15); 
-            border-color: rgba(27, 83, 131, 0.2);
-            background: #ffffff;
-        }
-
-        /* 触碰时触发高光扫过一次 */
-        .brand-link:hover::before, .brand-link:active::before {
-            animation: logoShine 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        }
-
-        .brand-link img { 
-            width: 100%; 
-            height: 75px; 
-            object-fit: contain; 
-            padding: 10px; 
-            display: block; 
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .brand-link:hover img, .brand-link:active img { 
-            transform: scale(1.1); 
-        }
-
-        .footer {
-            background: linear-gradient(135deg, var(--primary-blue), #123e63); color: #ffffff; text-align: center; padding: 20px; font-size: 12px; font-weight: 500; letter-spacing: 1px;
-        }
+        .footer { background: linear-gradient(135deg, var(--primary-blue), #123e63); color: #ffffff; text-align: center; padding: 20px; font-size: 12px; font-weight: 500; letter-spacing: 1px; }
         
-        @media (max-width: 360px) { 
-            .brand-grid { grid-template-columns: 1fr; } 
-            .quick-contact .quote-label { display: block; width: 100%; margin-bottom: 2px;}
-        }
+        @media (max-width: 360px) { .brand-grid { grid-template-columns: 1fr; } .quick-contact .quote-label { display: block; width: 100%; margin-bottom: 2px;} }
     </style>
 </head>
 <body>
@@ -388,41 +347,39 @@
                 </div>
             </div>
 
-            <!-- 二维码 -->
+            <!-- 企业微信与 WhatsApp 二维码 -->
             <div class="qr-section anim-up delay-4">
                 <div class="qr-container">
+                    <!-- 企业微信：仅作为图片展示 -->
                     <div class="qr-item">
-                        <div class="qr-wrapper"><img src="personal_qrcode.pic.jpg" alt="微信二维码"></div>
+                        <div class="qr-static-wrapper">
+                            <img src="qr.png" alt="WeCom QR">
+                        </div>
                         <p>WeChat</p>
                     </div>
+                    <!-- WhatsApp：保留跳转功能 -->
                     <div class="qr-item">
-                        <div class="qr-wrapper"><img src="ws_qrcode.pic.jpg" alt="WhatsApp 二维码"></div>
-                        <p>WhatsApp</p>
+                        <a href="https://wa.me/8613924851341" target="_blank" class="qr-link">
+                            <div class="qr-link-wrapper">
+                                <img src="qr_whatsapp.png" alt="WhatsApp QR">
+                            </div>
+                            <p>WhatsApp</p>
+                        </a>
                     </div>
                 </div>
             </div>
 
-            <!-- 品牌链接 (带高级动画) -->
             <div class="brands-section anim-up delay-5">
                 <div class="slogan">
                     Fueling Research, Feeding Discovery
                     <br>
                     <span>Antibodies | Proteins | Kits</span>
                 </div>
-
                 <div class="brand-grid">
-                    <a href="https://www.antbioinc.com" target="_blank" class="brand-link">
-                        <img src="antbio_pic.png" alt="公司首页">
-                    </a>
-                    <a href="https://en.starter-bio.com" target="_blank" class="brand-link">
-                        <img src="starter_pic.jpg" alt="斯达特">
-                    </a>
-                    <a href="https://www.ua-bio.com" target="_blank" class="brand-link">
-                        <img src="UA_pic.jpg" alt="UA-Bio">
-                    </a>
-                    <a href="https://www.absin.net" target="_blank" class="brand-link">
-                        <img src="absin_pic.jpg" alt="absin">
-                    </a>
+                    <a href="https://www.antbioinc.com" target="_blank" class="brand-link"><img src="antbio_pic.png" alt="公司首页"></a>
+                    <a href="https://en.starter-bio.com" target="_blank" class="brand-link"><img src="starter_pic.jpg" alt="斯达特"></a>
+                    <a href="https://www.ua-bio.com" target="_blank" class="brand-link"><img src="UA_pic.jpg" alt="UA-Bio"></a>
+                    <a href="https://www.absin.net" target="_blank" class="brand-link"><img src="absin_pic.jpg" alt="absin"></a>
                 </div>
             </div>
 
@@ -433,6 +390,7 @@
     </div>
 
     <script>
+        // --- 粒子动画脚本 ---
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
         const cardContainer = document.querySelector('.card');
@@ -459,14 +417,9 @@
         let scrollMomentum = 0;
         let targetMomentum = 0;
 
-        window.addEventListener('wheel', (e) => {
-            targetMomentum += e.deltaY * 0.03;
-        });
-
+        window.addEventListener('wheel', (e) => { targetMomentum += e.deltaY * 0.03; });
         let lastTouchY = 0;
-        window.addEventListener('touchstart', (e) => {
-            lastTouchY = e.touches[0].clientY;
-        });
+        window.addEventListener('touchstart', (e) => { lastTouchY = e.touches[0].clientY; });
         window.addEventListener('touchmove', (e) => {
             let currentY = e.touches[0].clientY;
             let deltaY = lastTouchY - currentY; 
@@ -475,10 +428,7 @@
         });
 
         class Particle3D {
-            constructor() {
-                this.reset();
-                this.z = Math.random() * 1000;
-            }
+            constructor() { this.reset(); this.z = Math.random() * 1000; }
             reset() {
                 this.x = (Math.random() - 0.5) * canvas.width * 2;
                 this.y = (Math.random() - 0.5) * canvas.height * 2;
