@@ -236,6 +236,9 @@
             color: #fff; background: var(--primary-blue); width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; margin-right: 12px; flex-shrink: 0; transition: transform 0.3s ease, background 0.3s ease;
         }
         .info-item[href]:hover .info-icon, .info-item[href]:active .info-icon { transform: scale(1.1) rotate(5deg); background: var(--primary-blue-light); }
+        /* 单独为PDF图标设置颜色，增强提示性 */
+        .pdf-icon-bg { background: var(--primary-red); }
+        .info-item[href]:hover .pdf-icon-bg, .info-item[href]:active .pdf-icon-bg { background: #e55353; }
 
         .info-text { word-break: break-word; line-height: 1.5; padding-top: 4px; }
         .address-en { font-size: 10.5px; color: var(--text-gray); margin-top: 4px; display: block; line-height: 1.3; opacity: 0.8; }
@@ -308,7 +311,7 @@
                     <div class="title">销售工程师</div>
                 </div>
                 <div class="logo-wrapper">
-                    <img src="antbio_pic.png" alt="AntBio Logo" class="header-logo">
+                    <img src="antbio_pic.png" alt="AntBio Logo" class="header-logo" onerror="this.style.display='none'">
                     <div class="logo-subtext">Antibodies | Proteins | Kits</div>
                 </div>
             </div>
@@ -344,6 +347,11 @@
                             <span class="address-en">FLAT N ON 8/F CENTURY INDUSTRIAL CENTRE NO.33-35 AU PUI WAN STREET SHATIN N.T.</span>
                         </span>
                     </div>
+                    <!-- 新增的指向网页2的文本超链接 -->
+                    <a href="documents.html" class="info-item">
+                        <i class="fa-solid fa-file-pdf info-icon pdf-icon-bg"></i>
+                        <span class="info-text" style="font-weight: 600; color: var(--primary-red);">公司产品目录 & 宣传资料</span>
+                    </a>
                 </div>
             </div>
 
@@ -353,7 +361,7 @@
                     <!-- 企业微信：仅作为图片展示 -->
                     <div class="qr-item">
                         <div class="qr-static-wrapper">
-                            <img src="personal_qrcode.pic.jpg" alt="WeCom QR">
+                            <img src="personal_qrcode.pic.jpg" alt="WeCom QR" onerror="this.src='https://via.placeholder.com/100?text=WeChat'">
                         </div>
                         <p>WeChat</p>
                     </div>
@@ -361,7 +369,7 @@
                     <div class="qr-item">
                         <a href="https://wa.me/8613924851341" target="_blank" class="qr-link">
                             <div class="qr-link-wrapper">
-                                <img src="ws_qrcode.pic.jpg" alt="WhatsApp QR">
+                                <img src="ws_qrcode.pic.jpg" alt="WhatsApp QR" onerror="this.src='https://via.placeholder.com/100?text=WhatsApp'">
                             </div>
                             <p>WhatsApp</p>
                         </a>
@@ -376,10 +384,10 @@
                     <span>Antibodies | Proteins | Kits</span>
                 </div>
                 <div class="brand-grid">
-                    <a href="https://www.antbioinc.com" target="_blank" class="brand-link"><img src="antbio_pic.png" alt="公司首页"></a>
-                    <a href="https://en.starter-bio.com" target="_blank" class="brand-link"><img src="starter_pic.jpg" alt="斯达特"></a>
-                    <a href="https://www.ua-bio.com" target="_blank" class="brand-link"><img src="UA_pic.jpg" alt="UA-Bio"></a>
-                    <a href="https://www.absin.net" target="_blank" class="brand-link"><img src="absin_pic.jpg" alt="absin"></a>
+                    <a href="https://www.antbioinc.com" target="_blank" class="brand-link"><img src="antbio_pic.png" alt="公司首页" onerror="this.src='https://via.placeholder.com/150x75?text=AntBio'"></a>
+                    <a href="https://en.starter-bio.com" target="_blank" class="brand-link"><img src="starter_pic.jpg" alt="斯达特" onerror="this.src='https://via.placeholder.com/150x75?text=Starter'"></a>
+                    <a href="https://www.ua-bio.com" target="_blank" class="brand-link"><img src="UA_pic.jpg" alt="UA-Bio" onerror="this.src='https://via.placeholder.com/150x75?text=UA-Bio'"></a>
+                    <a href="https://www.absin.net" target="_blank" class="brand-link"><img src="absin_pic.jpg" alt="absin" onerror="this.src='https://via.placeholder.com/150x75?text=absin'"></a>
                 </div>
             </div>
 
