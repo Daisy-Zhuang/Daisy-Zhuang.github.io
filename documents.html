@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>公司产品目录 & 宣传资料 - AntBio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #1b5383;
+            --primary-red: #cc3a3a;
+            --text-dark: #1a202c;
+            --text-gray: #64748b;
+            --bg-color: #f0f4f8;
+            --card-bg: rgba(255, 255, 255, 0.88);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 10px; 
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 统一的背景光球 */
+        .blob {
+            position: absolute;
+            filter: blur(60px);
+            z-index: -1;
+            opacity: 0.5;
+            animation: float 10s ease-in-out infinite;
+        }
+        .blob-1 { width: 300px; height: 300px; background: rgba(27, 83, 131, 0.4); top: -50px; left: -50px; border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+        .blob-2 { width: 250px; height: 250px; background: rgba(204, 58, 58, 0.3); bottom: -50px; right: -50px; border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; animation-delay: -3s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            width: 100%;
+            max-width: 480px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 
+                        inset 0 0 0 1px rgba(255, 255, 255, 0.9);
+            overflow: hidden; 
+            position: relative;
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 顶部导航与标题 */
+        .page-header {
+            padding: 25px 20px 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            background: linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 100%);
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: var(--text-gray);
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            padding: 8px 12px 8px 0;
+            border-radius: 8px;
+        }
+
+        .back-btn:hover, .back-btn:active {
+            color: var(--primary-blue);
+            transform: translateX(-3px);
+        }
+
+        .page-title {
+            margin-left: auto;
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--primary-blue);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #358bc7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* PDF 展示网格 */
+        .pdf-section {
+            padding: 25px 20px;
+        }
+
+        .pdf-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .pdf-item {
+            text-decoration: none;
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 14px;
+            padding: 12px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            position: relative;
+        }
+
+        .pdf-item::after {
+            content: '\f08e'; /* FontAwesome external link icon */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            color: var(--primary-blue);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 11px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .pdf-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 15px 30px rgba(27, 83, 131, 0.1);
+            border-color: rgba(27, 83, 131, 0.15);
+        }
+
+        .pdf-item:hover::after {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .pdf-cover {
+            width: 100%;
+            aspect-ratio: 1 / 1.414; /* 完美适配 A4 纸张比例 */
+            border-radius: 8px;
+            overflow: hidden;
+            background: #e2e8f0;
+            margin-bottom: 12px;
+            position: relative;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pdf-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .pdf-item:hover .pdf-cover img {
+            transform: scale(1.08);
+        }
+
+        .pdf-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            padding: 0 4px;
+        }
+
+        .pdf-desc {
+            font-size: 11px;
+            color: var(--text-gray);
+            text-align: center;
+            margin-top: 4px;
+        }
+
+        /* 占位符样式，当图片加载失败时显示 */
+        .fallback-cover {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: var(--primary-blue);
+            z-index: -1;
+        }
+        .fallback-cover i { font-size: 30px; margin-bottom: 10px; opacity: 0.5; }
+
+        @media (max-width: 360px) {
+            .pdf-grid { grid-template-columns: 1fr; }
+            .pdf-item { flex-direction: row; align-items: center; gap: 15px; }
+            .pdf-cover { width: 80px; margin-bottom: 0; flex-shrink: 0; }
+            .pdf-item::after { top: 50%; right: 15px; transform: translateY(-50%) translateX(10px); }
+            .pdf-item:hover::after { transform: translateY(-50%) translateX(0); }
+            .pdf-title { text-align: left; font-size: 14px; }
+            .pdf-desc { text-align: left; }
+            .text-container { flex-grow: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="card">
+        <!-- 顶部导航 -->
+        <div class="page-header">
+            <a href="index.html" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> 返回名片
+            </a>
+            <div class="page-title">文档资料</div>
+        </div>
+
+        <!-- 文件展示区 -->
+        <div class="pdf-section">
+            <div class="pdf-grid">
+                
+                <!-- 文件 1 -->
+                <a href="Files/document1.pdf" target="_blank" class="pdf-item">
+                    <div class="pdf-cover">
+                        <!-- 这里的 src 指向 images 文件夹里的封面图，onerror 确保图片不存在时有好看的备用显示 -->
+                        <img src="images/cover1.jpg" alt="公司宣传册封面" onerror="this.style.opacity='0'">
+                        <div class="fallback-cover"><i class="fa-regular fa-file-pdf"></i><span style="font-size:10px; font-weight:bold;">PDF Document</span></div>
+                    </div>
+                    <div class="text-container">
+                        <div class="pdf-title">AntBio 公司宣传册 2024版</div>
+                        <div class="pdf-desc">公司介绍 & 核心优势</div>
+                    </div>
+                </a>
+
+                <!-- 文件 2 -->
+                <a href="Files/document2.pdf" target="_blank" class="pdf-item" style="animation-delay: 0.1s;">
+                    <div class="pdf-cover">
+                        <img src="images/cover2.jpg" alt="产品目录封面" onerror="this.style.opacity='0'">
+                        <div class="fallback-cover"><i class="fa-regular fa-file-pdf"></i><span style="font-size:10px; font-weight:bold;">PDF Document</span></div>
+                    </div>
+                    <div class="text-container">
+                        <div class="pdf-title">综合产品目录</div>
+                        <div class="pdf-desc">Antibodies, Proteins, Kits</div>
+                    </div>
+                </a>
+
+                <!-- 文件 3 -->
+                <a href="Files/document3.pdf" target="_blank" class="pdf-item" style="animation-delay: 0.2s;">
+                    <div class="pdf-cover">
+                        <img src="images/cover3.jpg" alt="技术指南封面" onerror="this.style.opacity='0'">
+                        <div class="fallback-cover"><i class="fa-regular fa-file-pdf"></i><span style="font-size:10px; font-weight:bold;">PDF Document</span></div>
+                    </div>
+                    <div class="text-container">
+                        <div class="pdf-title">Starter 品牌专刊</div>
+                        <div class="pdf-desc">精选试剂介绍</div>
+                    </div>
+                </a>
+
+                <!-- 文件 4 (如果只有三个，你可以删掉这个区块) -->
+                <a href="Files/document4.pdf" target="_blank" class="pdf-item" style="animation-delay: 0.3s;">
+                    <div class="pdf-cover">
+                        <img src="images/cover4.jpg" alt="报价单封面" onerror="this.style.opacity='0'">
+                        <div class="fallback-cover"><i class="fa-regular fa-file-pdf"></i><span style="font-size:10px; font-weight:bold;">PDF Document</span></div>
+                    </div>
+                    <div class="text-container">
+                        <div class="pdf-title">订购指南与服务说明</div>
+                        <div class="pdf-desc">流程及售后支持</div>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
